@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/services/notification_service.dart';
+import '../../../tracking/presentation/screens/delivery_tracking_screen.dart';
+import '../../../notifications/presentation/screens/notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,11 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class DashboardTab extends StatelessWidget {
+class DashboardTab extends ConsumerWidget {
   const DashboardTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -70,10 +77,52 @@ class DashboardTab extends StatelessWidget {
       appBar: AppBar(
         title: const Text('SwiftSend'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // Navigate to notifications screen (to be implemented)
+          Consumer(
+            builder: (context, ref, _) {
+              final unreadCount = ref.watch(
+                notificationProvider.select((notifications) =>
+                    notifications.where((n) => !n.isRead).length),
+              );
+              
+              return Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  if (unreadCount > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.error,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          unreadCount > 99 ? '99+' : unreadCount.toString(),
+                          style: TextStyle(
+                            color: theme.colorScheme.onError,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              );
             },
           ),
         ],
@@ -103,7 +152,7 @@ class DashboardTab extends StatelessWidget {
                             label: 'Send Package',
                             color: colorScheme.primary,
                             onTap: () {
-                              // Navigate to send package screen (to be implemented)
+                              context.push(AppConstants.routeCreateDelivery);
                             },
                           ),
                         ),
@@ -150,7 +199,7 @@ class DashboardTab extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Navigate to create delivery screen (to be implemented)
+          context.push(AppConstants.routeCreateDelivery);
         },
         icon: const Icon(Icons.add),
         label: const Text('New Delivery'),
@@ -295,11 +344,7 @@ class TrackingTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Tracking Tab'),
-      ),
-    );
+    return const DeliveryTrackingScreen(deliveryId: 'SW001');
   }
 }
 

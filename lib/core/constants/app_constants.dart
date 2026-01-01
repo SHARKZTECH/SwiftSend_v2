@@ -51,6 +51,9 @@ class AppConstants {
   // Routes (for future navigation)
   static const String routeSplash = '/';
   static const String routeOnboarding = '/onboarding';
+  static const String routeSignIn = '/sign-in';
+  static const String routeSignUp = '/sign-up';
+  static const String routeForgotPassword = '/forgot-password';
   static const String routeAuth = '/auth';
   static const String routeHome = '/home';
   static const String routeProfile = '/profile';

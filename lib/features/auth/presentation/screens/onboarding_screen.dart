@@ -60,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _navigateToHome() {
-    context.go(AppConstants.routeHome);
+    context.go(AppConstants.routeSignIn);
   }
 
   @override
