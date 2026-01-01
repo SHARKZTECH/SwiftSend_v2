@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/providers/auth_provider_simple.dart';
+import '../../../../core/providers/supabase_auth_provider.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -28,16 +28,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   void _signIn() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final authNotifier = ref.read(authNotifierProvider.notifier);
-    await authNotifier.signIn(
+    final authNotifier = ref.read(supabaseAuthNotifierProvider.notifier);
+    final result = await authNotifier.signIn(
       _emailController.text.trim(),
       _passwordController.text,
     );
 
     if (mounted) {
-      final authState = ref.read(authNotifierProvider);
-      if (authState.hasValue && authState.value != null) {
+      if (result.isSuccess) {
         context.go(AppConstants.routeHome);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message)),
+        );
       }
     }
   }
@@ -45,7 +48,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(supabaseAuthNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(

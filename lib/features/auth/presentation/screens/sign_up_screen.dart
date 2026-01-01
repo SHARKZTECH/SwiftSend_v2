@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/models/user_simple.dart';
-import '../../../../core/providers/auth_provider_simple.dart';
+import '../../../../core/models/user_model.dart';
+import '../../../../core/providers/supabase_auth_provider.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -37,8 +37,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   void _signUp() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final authNotifier = ref.read(authNotifierProvider.notifier);
-    await authNotifier.signUp(
+    final authNotifier = ref.read(supabaseAuthNotifierProvider.notifier);
+    final result = await authNotifier.signUp(
       email: _emailController.text.trim(),
       password: _passwordController.text,
       fullName: _fullNameController.text.trim(),
@@ -47,9 +47,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
 
     if (mounted) {
-      final authState = ref.read(authNotifierProvider);
-      if (authState.hasValue && authState.value != null) {
+      if (result.isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message)),
+        );
         context.go(AppConstants.routeHome);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -57,7 +66,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(supabaseAuthNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
