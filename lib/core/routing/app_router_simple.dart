@@ -1,20 +1,13 @@
-// This file is temporarily disabled until code generation is set up
-// Using app_router_simple.dart instead
-
-/*
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants/app_constants.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/onboarding_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 
-part 'app_router.g.dart';
-
-@riverpod
-GoRouter router(RouterRef ref) {
+final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     debugLogDiagnostics: true,
     initialLocation: AppConstants.routeSplash,
@@ -65,5 +58,4 @@ GoRouter router(RouterRef ref) {
       ),
     ),
   );
-}
-*/
+});

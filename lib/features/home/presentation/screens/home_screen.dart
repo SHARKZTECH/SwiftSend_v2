@@ -73,7 +73,7 @@ class DashboardTab extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
-              // TODO: Navigate to notifications
+              // Navigate to notifications screen (to be implemented)
             },
           ),
         ],
@@ -103,7 +103,7 @@ class DashboardTab extends StatelessWidget {
                             label: 'Send Package',
                             color: colorScheme.primary,
                             onTap: () {
-                              // TODO: Navigate to send package
+                              // Navigate to send package screen (to be implemented)
                             },
                           ),
                         ),
@@ -114,7 +114,7 @@ class DashboardTab extends StatelessWidget {
                             label: 'Order History',
                             color: colorScheme.secondary,
                             onTap: () {
-                              // TODO: Navigate to order history
+                              // Navigate to order history screen (to be implemented)
                             },
                           ),
                         ),
@@ -150,7 +150,7 @@ class DashboardTab extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // TODO: Navigate to create delivery
+          // Navigate to create delivery screen (to be implemented)
         },
         icon: const Icon(Icons.add),
         label: const Text('New Delivery'),
@@ -269,7 +269,7 @@ class DeliveryCard extends StatelessWidget {
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          // TODO: Navigate to delivery details
+          // Navigate to delivery details screen (to be implemented)
         },
       ),
     );

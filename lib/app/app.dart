@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/theme/app_theme.dart';
-import '../features/splash/presentation/screens/splash_screen.dart';
+import '../core/routing/app_router_simple.dart';
 
-class SwiftSendApp extends StatelessWidget {
+class SwiftSendApp extends ConsumerWidget {
   const SwiftSendApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    
+    return MaterialApp.router(
       title: 'SwiftSend Kenya',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const SplashScreen(),
+      routerConfig: router,
       builder: (context, child) {
         // Ensure text scaling doesn't break layouts on all devices
         return MediaQuery(
