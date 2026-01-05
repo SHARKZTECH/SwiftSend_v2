@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/services/notification_service.dart';
+import '../../../tracking/presentation/screens/delivery_tracking_screen.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
@@ -254,16 +255,21 @@ class NotificationsScreen extends ConsumerWidget {
         // Navigate to delivery tracking screen
         final deliveryId = notification.data?['delivery_id'];
         if (deliveryId != null) {
-          // Navigator.push to delivery tracking screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => DeliveryTrackingScreen(deliveryId: deliveryId),
+            ),
+          );
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Opening delivery $deliveryId')),
+            const SnackBar(content: Text('Delivery ID not found')),
           );
         }
         break;
       case NotificationType.payment:
-        // Navigate to payment history
+        // Navigate to payment history (placeholder for now)
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening payment details')),
+          const SnackBar(content: Text('Payment history coming soon')),
         );
         break;
       case NotificationType.promotion:
@@ -274,9 +280,10 @@ class NotificationsScreen extends ConsumerWidget {
         }
         break;
       case NotificationType.rider:
-        // Navigate to rider details
+        // Navigate to rider details (placeholder for now)
+        final riderId = notification.data?['rider_id'];
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Opening rider details')),
+          SnackBar(content: Text(riderId != null ? 'Rider profile coming soon' : 'Rider not found')),
         );
         break;
       case NotificationType.system:

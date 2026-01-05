@@ -7,26 +7,54 @@ import '../../../../core/services/notification_service.dart';
 import '../../../tracking/presentation/screens/delivery_tracking_screen.dart';
 import '../../../notifications/presentation/screens/notifications_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
+import '../../../delivery/presentation/screens/customer_deliveries_screen.dart';
+import '../../../rider/presentation/screens/rider_dashboard_screen.dart';
+import '../../../../core/providers/supabase_auth_provider.dart';
+import '../../../../core/models/user_model.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    const DashboardTab(),
-    const DeliveriesTab(),
+  
+  void _changeTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+  
+  late final List<Widget> _screens = [
+    DashboardTab(onTabChange: _changeTab),
+    const CustomerDeliveriesScreen(),
     const TrackingTab(),
     const ProfileTab(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(supabaseAuthNotifierProvider);
+    
+    // Show rider dashboard for rider users
+    return authState.when(
+      data: (user) {
+        if (user?.userType == UserType.rider) {
+          return const RiderDashboardScreen();
+        }
+        return _buildCustomerHome();
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => _buildCustomerHome(),
+    );
+  }
+  
+  Widget _buildCustomerHome() {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
@@ -66,11 +94,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class DashboardTab extends ConsumerWidget {
-  const DashboardTab({super.key});
+class DashboardTab extends ConsumerStatefulWidget {
+  const DashboardTab({super.key, required this.onTabChange});
+  
+  final Function(int) onTabChange;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardTab> createState() => _DashboardTabState();
+}
+
+class _DashboardTabState extends ConsumerState<DashboardTab> {
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -164,7 +199,7 @@ class DashboardTab extends ConsumerWidget {
                             label: 'Order History',
                             color: colorScheme.secondary,
                             onTap: () {
-                              // Navigate to order history screen (to be implemented)
+                              widget.onTabChange(1);
                             },
                           ),
                         ),
@@ -319,26 +354,14 @@ class DeliveryCard extends StatelessWidget {
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          // Navigate to delivery details screen (to be implemented)
+          // TODO: Navigate to specific delivery details when implemented
         },
       ),
     );
   }
 }
 
-// Placeholder tabs
-class DeliveriesTab extends StatelessWidget {
-  const DeliveriesTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Deliveries Tab'),
-      ),
-    );
-  }
-}
+// Navigation tabs
 
 class TrackingTab extends StatelessWidget {
   const TrackingTab({super.key});
@@ -349,11 +372,65 @@ class TrackingTab extends StatelessWidget {
   }
 }
 
-class ProfileTab extends StatelessWidget {
+class ProfileTab extends ConsumerWidget {
   const ProfileTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const ProfileScreen();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(supabaseAuthNotifierProvider);
+    
+    return authState.when(
+      data: (user) {
+        if (user == null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Profile'),
+              centerTitle: true,
+            ),
+            body: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.person_off, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text('Please sign in to view your profile'),
+                ],
+              ),
+            ),
+          );
+        }
+        return const ProfileScreen();
+      },
+      loading: () => Scaffold(
+        appBar: AppBar(
+          title: const Text('Profile'),
+          centerTitle: true,
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Profile'),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error loading profile: $error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  ref.invalidate(supabaseAuthNotifierProvider);
+                },
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

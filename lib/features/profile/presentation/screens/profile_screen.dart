@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/providers/supabase_auth_provider.dart';
 import 'edit_profile_screen.dart';
+import '../../../settings/presentation/screens/settings_screen.dart';
+import '../../../support/presentation/screens/help_support_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -96,12 +98,18 @@ class ProfileScreen extends ConsumerWidget {
             theme,
             'Personal Information',
             [
-              _buildInfoTile(Icons.email, 'Email', user.email),
-              _buildInfoTile(Icons.phone, 'Phone', user.phoneNumber),
-              if (user.profile?.address != null)
-                _buildInfoTile(Icons.location_on, 'Address', user.profile!.address!),
-              if (user.profile?.city != null)
-                _buildInfoTile(Icons.location_city, 'City', user.profile!.city!),
+              _buildInfoTile(Icons.email, 'Email', user.email.isNotEmpty ? user.email : 'Not provided'),
+              _buildInfoTile(Icons.phone, 'Phone', user.phoneNumber.isNotEmpty ? user.phoneNumber : 'Not provided'),
+              _buildInfoTile(
+                Icons.location_on, 
+                'Address', 
+                user.profile?.address?.isNotEmpty == true ? user.profile!.address! : 'Not provided'
+              ),
+              _buildInfoTile(
+                Icons.location_city, 
+                'City', 
+                user.profile?.city?.isNotEmpty == true ? user.profile!.city! : 'Not provided'
+              ),
             ],
           ),
           
@@ -138,6 +146,47 @@ class ProfileScreen extends ConsumerWidget {
           
           // Action buttons
           _buildActionButtons(context, theme),
+          
+          // Debug info section (can be removed in production)
+          if (!user.isVerified || _isProfileIncomplete(user)) ...[
+            const SizedBox(height: 24),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: theme.colorScheme.outline),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.bug_report, color: theme.colorScheme.onSurfaceVariant),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Debug Info',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text('User ID: ${user.id}', style: theme.textTheme.bodySmall),
+                  Text('Email: ${user.email.isEmpty ? "Empty" : "✓"}', style: theme.textTheme.bodySmall),
+                  Text('Phone: ${user.phoneNumber.isEmpty ? "Empty" : "✓"}', style: theme.textTheme.bodySmall),
+                  Text('Name: ${user.fullName.isEmpty ? "Empty" : "✓"}', style: theme.textTheme.bodySmall),
+                  Text('Profile exists: ${user.profile != null ? "✓" : "No"}', style: theme.textTheme.bodySmall),
+                  if (user.profile != null) ...[
+                    Text('Address: ${user.profile!.address?.isEmpty ?? true ? "Empty" : "✓"}', style: theme.textTheme.bodySmall),
+                    Text('City: ${user.profile!.city?.isEmpty ?? true ? "Empty" : "✓"}', style: theme.textTheme.bodySmall),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -395,11 +444,89 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildActionButtons(BuildContext context, ThemeData theme) {
     return Column(
       children: [
+        // Complete profile prompt if profile seems incomplete
+        Consumer(
+          builder: (context, ref, child) {
+            final authState = ref.watch(supabaseAuthNotifierProvider);
+            
+            return authState.when(
+              data: (user) {
+                if (user != null && _isProfileIncomplete(user)) {
+                  return Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.info, color: theme.colorScheme.primary),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Complete Your Profile',
+                                    style: theme.textTheme.titleMedium?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Add more information to improve your SwiftSend experience',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => EditProfileScreen(user: user),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.edit),
+                                label: const Text('Complete Profile'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+              loading: () => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
+            );
+          },
+        ),
+        
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () {
-              // Navigate to settings
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
             },
             icon: const Icon(Icons.settings),
             label: const Text('Settings'),
@@ -410,7 +537,11 @@ class ProfileScreen extends ConsumerWidget {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () {
-              // Navigate to help/support
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const HelpSupportScreen(),
+                ),
+              );
             },
             icon: const Icon(Icons.help_outline),
             label: const Text('Help & Support'),
@@ -418,6 +549,15 @@ class ProfileScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+  
+  bool _isProfileIncomplete(UserModel user) {
+    // Check if key profile fields are missing
+    return user.email.isEmpty || 
+           user.phoneNumber.isEmpty || 
+           user.fullName.isEmpty ||
+           (user.profile?.address?.isEmpty ?? true) ||
+           (user.profile?.city?.isEmpty ?? true);
   }
 
   String _formatDate(DateTime date) {
