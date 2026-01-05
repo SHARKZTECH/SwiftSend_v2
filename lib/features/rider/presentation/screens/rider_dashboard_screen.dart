@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/constants/app_constants.dart';
 
 class RiderDashboardScreen extends ConsumerStatefulWidget {
   const RiderDashboardScreen({super.key});
@@ -420,24 +423,34 @@ class _RiderDashboardScreenState extends ConsumerState<RiderDashboardScreen>
                     onPressed: () => _acceptDelivery(delivery),
                     child: const Text('Accept'),
                   ),
-                if (isCurrent) ...[
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      // Call customer
-                    },
-                    icon: const Icon(Icons.phone),
-                    label: const Text('Call'),
-                  ),
-                  const SizedBox(width: 8),
-                  FilledButton(
-                    onPressed: () {
-                      // Navigate to delivery
-                    },
-                    child: const Text('Navigate'),
-                  ),
-                ],
               ],
             ),
+            if (isCurrent) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        // Call customer
+                      },
+                      icon: const Icon(Icons.phone, size: 18),
+                      label: const Text('Call'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () {
+                        context.push(AppConstants.routeTracking);
+                      },
+                      icon: const Icon(Icons.navigation, size: 18),
+                      label: const Text('Navigate'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -475,7 +488,12 @@ class _RiderDashboardScreenState extends ConsumerState<RiderDashboardScreen>
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
-                  // Mark as picked up
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Package marked as picked up!'),
+                      backgroundColor: Colors.blue,
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.check_circle),
                 label: const Text('Mark Picked Up'),
@@ -485,7 +503,7 @@ class _RiderDashboardScreenState extends ConsumerState<RiderDashboardScreen>
             Expanded(
               child: FilledButton.icon(
                 onPressed: () {
-                  // Start navigation
+                  context.push(AppConstants.routeTracking);
                 },
                 icon: const Icon(Icons.navigation),
                 label: const Text('Start Navigation'),
@@ -498,7 +516,14 @@ class _RiderDashboardScreenState extends ConsumerState<RiderDashboardScreen>
           width: double.infinity,
           child: FilledButton.icon(
             onPressed: () {
-              // Mark as delivered
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Redirecting to proof of delivery...'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 1),
+                ),
+              );
+              context.push(AppConstants.routeProofOfDelivery, extra: 'SW004');
             },
             icon: const Icon(Icons.done_all),
             label: const Text('Mark as Delivered'),
