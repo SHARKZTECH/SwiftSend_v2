@@ -303,10 +303,10 @@ class _RiderRegistrationScreenState extends ConsumerState<RiderRegistrationScree
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer.withOpacity(0.3),
+                      color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: theme.colorScheme.primary.withOpacity(0.3),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Column(
@@ -366,7 +366,7 @@ class _RiderRegistrationScreenState extends ConsumerState<RiderRegistrationScree
           ),
           borderRadius: BorderRadius.circular(12),
           color: imagePath != null 
-              ? theme.colorScheme.primaryContainer.withOpacity(0.1) 
+              ? theme.colorScheme.primaryContainer.withValues(alpha: 0.1) 
               : null,
         ),
         child: Row(

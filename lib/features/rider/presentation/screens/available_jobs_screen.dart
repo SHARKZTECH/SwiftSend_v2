@@ -140,7 +140,7 @@ class _AvailableJobsScreenState extends ConsumerState<AvailableJobsScreen> {
           // Stats bar
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             child: Row(
               children: [
                 Icon(

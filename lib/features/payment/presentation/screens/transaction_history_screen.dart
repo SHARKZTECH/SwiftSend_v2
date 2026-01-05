@@ -304,16 +304,16 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 16),
@@ -393,7 +393,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.colorScheme.outline.withOpacity(0.5)),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -401,7 +401,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: (isEarning ? Colors.green : Colors.red).withOpacity(0.1),
+              color: (isEarning ? Colors.green : Colors.red).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -444,7 +444,7 @@ class _TransactionHistoryScreenState extends ConsumerState<TransactionHistoryScr
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(

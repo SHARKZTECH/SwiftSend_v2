@@ -80,7 +80,7 @@ class SignaturePadWidgetState extends State<SignaturePadWidget> {
                   bottom: 40,
                   child: Container(
                     height: 1,
-                    color: theme.colorScheme.outline.withOpacity(0.3),
+                    color: theme.colorScheme.outline.withValues(alpha: 0.3),
                   ),
                 ),
                 // X mark for signature
@@ -90,7 +90,7 @@ class SignaturePadWidgetState extends State<SignaturePadWidget> {
                   child: Text(
                     'X',
                     style: TextStyle(
-                      color: theme.colorScheme.outline.withOpacity(0.5),
+                      color: theme.colorScheme.outline.withValues(alpha: 0.5),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -102,7 +102,7 @@ class SignaturePadWidgetState extends State<SignaturePadWidget> {
                     child: Text(
                       'Sign here',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+                        color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                     ),
                   ),

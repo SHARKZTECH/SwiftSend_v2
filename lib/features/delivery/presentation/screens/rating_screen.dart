@@ -82,7 +82,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
         icon: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.amber.withOpacity(0.1),
+            color: Colors.amber.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: const Icon(

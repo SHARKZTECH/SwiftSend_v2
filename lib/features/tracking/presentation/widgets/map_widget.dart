@@ -116,7 +116,7 @@ class _DeliveryMapWidgetState extends State<DeliveryMapWidget> {
       Polyline(
         points: points,
         strokeWidth: 4,
-        color: Colors.blue.withOpacity(0.7),
+        color: Colors.blue.withValues(alpha: 0.7),
         isDotted: true,
       ),
     ];
@@ -130,7 +130,7 @@ class _DeliveryMapWidgetState extends State<DeliveryMapWidget> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -225,7 +225,7 @@ class _MapMarker extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.4),
+            color: color.withValues(alpha: 0.4),
             blurRadius: 8,
             spreadRadius: 2,
           ),
@@ -257,7 +257,7 @@ class _RiderMarker extends StatelessWidget {
         border: Border.all(color: Colors.white, width: 3),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.4),
+            color: Colors.blue.withValues(alpha: 0.4),
             blurRadius: 12,
             spreadRadius: 4,
           ),
