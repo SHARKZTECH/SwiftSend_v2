@@ -56,7 +56,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
@@ -164,7 +164,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   },
                   child: const Text('Forgot Password?'),
                 ),
-                const Spacer(),
+                const SizedBox(height: 48),
                 // Sign up option
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

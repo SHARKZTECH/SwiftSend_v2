@@ -74,12 +74,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
+            child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 16),
@@ -317,7 +316,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ),
                     ),
                 ],
-              ),
             ),
           ),
         ),
