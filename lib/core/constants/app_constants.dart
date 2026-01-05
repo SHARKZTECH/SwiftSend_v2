@@ -61,6 +61,14 @@ class AppConstants {
   static const String routeTracking = '/tracking';
   static const String routeCreateDelivery = '/create-delivery';
   static const String routeNotifications = '/notifications';
+  static const String routeRiderRegistration = '/rider-registration';
+  static const String routeAvailableJobs = '/available-jobs';
+  static const String routeJobDetails = '/job-details';
+  static const String routeProofOfDelivery = '/proof-of-delivery';
+  static const String routeRating = '/rating';
+  static const String routeWallet = '/wallet';
+  static const String routeTransactionHistory = '/transaction-history';
+  static const String routeRiderDashboard = '/rider-dashboard';
   
   // Asset Paths
   static const String logoPath = 'assets/logo/';

@@ -10,6 +10,14 @@ import '../../features/auth/presentation/screens/sign_up_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/delivery/presentation/screens/create_delivery_screen.dart';
+import '../../features/delivery/presentation/screens/proof_of_delivery_screen.dart';
+import '../../features/delivery/presentation/screens/rating_screen.dart';
+import '../../features/rider/presentation/screens/rider_registration_screen.dart';
+import '../../features/rider/presentation/screens/rider_dashboard_screen.dart';
+import '../../features/rider/presentation/screens/available_jobs_screen.dart';
+import '../../features/rider/presentation/screens/job_details_screen.dart';
+import '../../features/payment/presentation/screens/wallet_screen.dart';
+import '../../features/payment/presentation/screens/transaction_history_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -50,6 +58,56 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppConstants.routeCreateDelivery,
         name: 'create-delivery',
         builder: (context, state) => const CreateDeliveryScreen(),
+      ),
+      // New MVP screens
+      GoRoute(
+        path: AppConstants.routeRiderRegistration,
+        name: 'rider-registration',
+        builder: (context, state) => const RiderRegistrationScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.routeRiderDashboard,
+        name: 'rider-dashboard',
+        builder: (context, state) => const RiderDashboardScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.routeAvailableJobs,
+        name: 'available-jobs',
+        builder: (context, state) => const AvailableJobsScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.routeJobDetails,
+        name: 'job-details',
+        builder: (context, state) {
+          final job = state.extra as AvailableJob?;
+          return JobDetailsScreen(job: job);
+        },
+      ),
+      GoRoute(
+        path: AppConstants.routeProofOfDelivery,
+        name: 'proof-of-delivery',
+        builder: (context, state) {
+          final deliveryId = state.extra as String?;
+          return ProofOfDeliveryScreen(deliveryId: deliveryId);
+        },
+      ),
+      GoRoute(
+        path: AppConstants.routeRating,
+        name: 'rating',
+        builder: (context, state) {
+          final deliveryId = state.extra as String?;
+          return RatingScreen(deliveryId: deliveryId);
+        },
+      ),
+      GoRoute(
+        path: AppConstants.routeWallet,
+        name: 'wallet',
+        builder: (context, state) => const WalletScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.routeTransactionHistory,
+        name: 'transaction-history',
+        builder: (context, state) => const TransactionHistoryScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
