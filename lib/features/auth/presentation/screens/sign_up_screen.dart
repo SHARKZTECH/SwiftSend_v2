@@ -51,7 +51,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result.message)),
         );
-        context.go(AppConstants.routeHome);
+        // Redirect riders to registration, others to home
+        if (_selectedUserType == UserType.rider) {
+          context.go(AppConstants.routeRiderRegistration);
+        } else {
+          context.go(AppConstants.routeHome);
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

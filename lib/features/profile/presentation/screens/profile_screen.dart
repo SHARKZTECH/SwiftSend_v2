@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/providers/supabase_auth_provider.dart';
 import 'edit_profile_screen.dart';
@@ -518,6 +520,17 @@ class ProfileScreen extends ConsumerWidget {
           },
         ),
         
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              context.push(AppConstants.routeWallet);
+            },
+            icon: const Icon(Icons.account_balance_wallet),
+            label: const Text('Wallet'),
+          ),
+        ),
+        const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(

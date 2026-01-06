@@ -156,6 +156,13 @@ class _RiderDashboardScreenState extends ConsumerState<RiderDashboardScreen>
           _buildStats(theme),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          context.push(AppConstants.routeAvailableJobs);
+        },
+        icon: const Icon(Icons.search),
+        label: const Text('Find Jobs'),
+      ),
     );
   }
 
@@ -398,12 +405,12 @@ class _RiderDashboardScreenState extends ConsumerState<RiderDashboardScreen>
               ],
             ),
             const SizedBox(height: 12),
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 _buildInfoChip(theme, '${delivery.distance} km', Icons.straighten),
-                const SizedBox(width: 8),
                 _buildInfoChip(theme, '${delivery.estimatedTime} min', Icons.access_time),
-                const SizedBox(width: 8),
                 _buildInfoChip(theme, delivery.packageSize, Icons.inventory),
               ],
             ),

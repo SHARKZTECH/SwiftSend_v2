@@ -18,6 +18,7 @@ import '../../features/rider/presentation/screens/available_jobs_screen.dart';
 import '../../features/rider/presentation/screens/job_details_screen.dart';
 import '../../features/payment/presentation/screens/wallet_screen.dart';
 import '../../features/payment/presentation/screens/transaction_history_screen.dart';
+import '../../features/tracking/presentation/screens/delivery_tracking_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -108,6 +109,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppConstants.routeTransactionHistory,
         name: 'transaction-history',
         builder: (context, state) => const TransactionHistoryScreen(),
+      ),
+      GoRoute(
+        path: AppConstants.routeTracking,
+        name: 'tracking',
+        builder: (context, state) {
+          final deliveryId = state.extra as String? ?? 'SW001';
+          return DeliveryTrackingScreen(deliveryId: deliveryId);
+        },
       ),
     ],
     errorBuilder: (context, state) => Scaffold(
