@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../../../core/models/delivery_model.dart' as models;
+import '../../../../core/services/delivery_service.dart';
+import '../../../../core/providers/supabase_auth_provider.dart';
 import '../../../payment/presentation/screens/payment_screen.dart';
 
 class CreateDeliveryScreen extends ConsumerStatefulWidget {
@@ -77,15 +81,89 @@ class _CreateDeliveryScreenState extends ConsumerState<CreateDeliveryScreen>
   void _createDelivery() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // Navigate to payment screen
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => PaymentScreen(
-          deliveryId: 'SW${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
-          amount: _estimatedPrice,
-        ),
-      ),
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
     );
+
+    try {
+      final user = ref.read(currentUserProvider);
+      if (user == null) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please sign in to create a delivery')),
+        );
+        return;
+      }
+
+      // Build delivery model
+      final modelPackageSize = _packageSize == PackageSize.small ? models.PackageSize.small
+          : _packageSize == PackageSize.medium ? models.PackageSize.medium
+          : _packageSize == PackageSize.large ? models.PackageSize.large
+          : models.PackageSize.extraLarge;
+
+      final delivery = models.DeliveryModel(
+        id: const Uuid().v4(),
+        senderId: user.id,
+        receiverName: _receiverNameController.text.trim(),
+        receiverPhone: _receiverPhoneController.text.trim(),
+        pickupAddress: _pickupAddressController.text.trim(),
+        pickupLocation: models.LocationData(
+          latitude: -1.2921,  // Default Nairobi coords - replace with actual
+          longitude: 36.8219,
+          address: _pickupAddressController.text.trim(),
+        ),
+        dropoffAddress: _dropoffAddressController.text.trim(),
+        dropoffLocation: models.LocationData(
+          latitude: -1.2864,  // Default coords - replace with actual
+          longitude: 36.8172,
+          address: _dropoffAddressController.text.trim(),
+        ),
+        packageInfo: models.PackageInfo(
+          size: modelPackageSize,
+          description: _packageDescriptionController.text.trim(),
+          isFragile: _isFragile,
+          requiresSignature: _requiresSignature,
+        ),
+        estimatedPrice: _estimatedPrice,
+        status: models.DeliveryStatus.pending,
+        createdAt: DateTime.now(),
+        specialInstructions: _specialInstructionsController.text.trim().isNotEmpty
+            ? _specialInstructionsController.text.trim()
+            : null,
+      );
+
+      // Submit to Supabase
+      final deliveryService = ref.read(deliveryServiceProvider);
+      final result = await deliveryService.createDelivery(delivery);
+
+      Navigator.of(context).pop(); // Close loading dialog
+
+      if (result.isSuccess) {
+        // Navigate to payment screen
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PaymentScreen(
+                deliveryId: delivery.id,
+                amount: _estimatedPrice,
+              ),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+      );
+    }
   }
 
   @override
