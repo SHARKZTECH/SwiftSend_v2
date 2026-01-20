@@ -34,11 +34,21 @@ class _CustomerDeliveriesScreenState extends ConsumerState<CustomerDeliveriesScr
 
   Future<void> _loadDeliveries() async {
     final user = ref.read(currentUserProvider);
-    if (user == null) return;
-
+    
     setState(() {
       _isLoading = true;
     });
+
+    if (user == null) {
+      // User not logged in - show empty state instead of spinning forever
+      if (mounted) {
+        setState(() {
+          _allDeliveries = [];
+          _isLoading = false;
+        });
+      }
+      return;
+    }
 
     try {
       final deliveryService = ref.read(deliveryServiceProvider);

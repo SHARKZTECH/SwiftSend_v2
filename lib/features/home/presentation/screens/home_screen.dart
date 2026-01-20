@@ -354,7 +354,7 @@ class DeliveryCard extends StatelessWidget {
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          // TODO: Navigate to specific delivery details when implemented
+          context.push(AppConstants.routeTracking, extra: orderId);
         },
       ),
     );
