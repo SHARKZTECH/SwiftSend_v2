@@ -1,0 +1,35 @@
+flowchart TB
+    subgraph "Local Storage Layer"
+        SQL[(SQLite DB)]
+        MAP[(Map Cache OSM Tiles)]
+        POD[(POD Queue)]
+    end
+    
+    subgraph "Offline Capabilities"
+        V[View Assigned Deliveries]
+        N[GPS Navigation]
+        C[Capture POD]
+        M[Mark Complete]
+        X[Cannot Accept New Jobs]
+    end
+    
+    subgraph "Sync Mechanism"
+        BG[Background Service 30s Check]
+        BG --> Q{Online?}
+        Q -->|Yes| UP[Query PENDING Records]
+        UP --> BATCH[Batch Upload POD with Retry]
+        Q -->|No| WAIT[Wait and Retry]
+        WAIT --> BG
+    end
+    
+    subgraph "Fallback"
+        SMS[SMS Gateway]
+        SMS --> CRIT[Critical Updates via SMS]
+    end
+    
+    SQL --> V
+    MAP --> N
+    V --> C
+    C --> POD
+    POD --> BATCH
+    BATCH --> SMS

@@ -1,0 +1,25 @@
+flowchart TD
+    A([Start]) --> B[User inputs informal address]
+    B --> C[Text sent to NLP Module]
+    C --> D[Tokenization & Entity Recognition]
+    D --> E[Query Landmark Database<br/>with Fuzzy Matching]
+    E --> F[Parse Directional/Distance Info]
+    F --> G[Community Data Lookup<br/>100m radius]
+    G --> H{Multiple<br/>Candidates?}
+    
+    H -->|Yes| I[ML Ranking Model]
+    H -->|No| J[Calculate Confidence Score]
+    I --> J
+    
+    J --> K{Score > 60%?}
+    K -->|Yes| L[Auto-resolve to GPS]
+    K -->|No| M[Request Verification Call]
+    M --> L
+    
+    L --> N[Return Coordinates<br/>with Accuracy Zone]
+    N --> O[Show Map Confirmation]
+    O --> P{User Adjusts?}
+    
+    P -->|Yes| Q[Store Correction<br/>for ML Learning]
+    P -->|No| R([End])
+    Q --> R

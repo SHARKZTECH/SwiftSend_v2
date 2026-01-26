@@ -1,0 +1,23 @@
+flowchart TB
+    subgraph "Agent Registration"
+        REG[Local Shops and M-Pesa Agents]
+        REG --> DATA[Registered: Name, GPS, Hours]
+        DATA --> COV[500+ Agents in Kibera, Mathare, Mukuru]
+    end
+    
+    subgraph "Package Handoff Flow"
+        CR[Courier] -->|Delivers to| AG[Agent Location]
+        AG --> SIG[Agent Signature + Photo as POD]
+        SIG --> SMS[SMS to Recipient with Code]
+        SMS --> WAIT[48-Hour Collection Window]
+        WAIT --> REC[Recipient Shows Code]
+        REC --> REL[Agent Releases Package]
+        REL --> PAY[Agent Earns KES 30 Weekly]
+    end
+    
+    subgraph "Geographic Coverage"
+        K[Kibera 150 agents]
+        MT[Mathare 120 agents]
+        MK[Mukuru 100 agents]
+        O[Other Areas 130+ agents]
+    end

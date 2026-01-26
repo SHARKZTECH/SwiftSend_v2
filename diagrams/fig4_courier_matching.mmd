@@ -1,0 +1,22 @@
+flowchart TD
+    subgraph "Stage 1: Initial Filtering"
+        A[New Delivery Order] --> B[Query Online Couriers<br/>within 5km Radius]
+        B --> C[Filter by Vehicle Type<br/>vs Package Size]
+    end
+    
+    subgraph "Stage 2: Scoring Calculation"
+        C --> D[Calculate Composite Score]
+        D --> E["Score = 0.30 Proximity + 0.20 Rating + 0.20 Vehicle + 0.15 Acceptance + 0.10 Load + 0.05 Traffic"]
+    end
+    
+    subgraph "Stage 3: Parallel Dispatch"
+        E --> F[Rank by Score Descending]
+        F --> G[Send to Top 3 Simultaneously]
+        G --> H[Start 60s Timer]
+        H --> I{First Accept?}
+        I -->|Yes| J[Assign Courier]
+        I -->|Timeout| K[Expand to 10km]
+        K --> B
+    end
+    
+    J --> L([Delivery Begins])

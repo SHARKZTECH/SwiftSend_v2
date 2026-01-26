@@ -1,0 +1,43 @@
+flowchart TB
+    subgraph "Mobile Apps"
+        CA[Customer App<br/>Android/iOS]
+        RA[Courier App<br/>Android/iOS]
+    end
+    
+    subgraph "Web Portals"
+        AP[Agent Portal]
+        AD[Admin Dashboard]
+    end
+    
+    subgraph "Cloud Infrastructure"
+        API[API Server<br/>REST/HTTPS]
+        ML[ML Inference<br/>Service]
+        PS[Payment<br/>Service]
+    end
+    
+    subgraph "Database Layer"
+        PG[(PostgreSQL<br/>Cluster)]
+        RD[(Redis<br/>Cache)]
+    end
+    
+    subgraph "External Services"
+        MP[M-Pesa API]
+        MAP[Google Maps API]
+        SMS[SMS Gateway]
+        FCM[Firebase FCM]
+    end
+    
+    CA <-->|HTTPS| API
+    RA <-->|HTTPS| API
+    AP <-->|HTTPS| API
+    AD <-->|HTTPS| API
+    
+    API <--> PG
+    API <--> RD
+    API <--> ML
+    API <--> PS
+    
+    PS <--> MP
+    API <--> MAP
+    API <--> SMS
+    API <--> FCM

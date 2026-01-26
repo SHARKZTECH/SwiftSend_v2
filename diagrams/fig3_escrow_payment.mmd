@@ -1,0 +1,30 @@
+flowchart TD
+    A([Customer Initiates Payment]) --> B[STK Push to Phone]
+    B --> C[Customer Enters M-Pesa PIN]
+    C --> D[Funds Transfer to<br/>Platform Escrow Account]
+    D --> E[Server Receives Confirmation]
+    E --> F[Status: ESCROWED]
+    F --> G[Trigger Courier Matching]
+    
+    G --> H[Courier Assigned]
+    H --> I[Courier Completes Delivery]
+    I --> J[POD Capture:<br/>Signature + Photo + GPS]
+    J --> K[Generate SHA-256 Hash]
+    K --> L[Customer Notification Sent]
+    
+    L --> M[2-Hour Dispute Window]
+    M --> N{Dispute Filed?}
+    
+    N -->|Yes| O[Freeze Funds<br/>Start Resolution]
+    N -->|No| P[Auto-Release Funds]
+    
+    O --> Q{Resolution}
+    Q -->|Customer Wins| R[Refund to Customer]
+    Q -->|Courier Wins| P
+    
+    P --> S[Split Payment]
+    S --> T[85% to Courier Wallet]
+    S --> U[15% to Platform]
+    T --> V[Courier Withdraws<br/>to M-Pesa Anytime]
+    V --> W([End])
+    R --> W
