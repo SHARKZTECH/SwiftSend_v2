@@ -1,30 +1,44 @@
 flowchart TD
-    A([Customer Initiates Payment]) --> B[STK Push to Phone]
-    B --> C[Customer Enters M-Pesa PIN]
-    C --> D[Funds Transfer to<br/>Platform Escrow Account]
-    D --> E[Server Receives Confirmation]
-    E --> F[Status: ESCROWED]
-    F --> G[Trigger Courier Matching]
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
     
-    G --> H[Courier Assigned]
-    H --> I[Courier Completes Delivery]
-    I --> J[POD Capture:<br/>Signature + Photo + GPS]
-    J --> K[Generate SHA-256 Hash]
-    K --> L[Customer Notification Sent]
+    301(["START: Customer initiates M-Pesa payment (Ref. 301)"])
+    302["STK push to customer phone (Ref. 302)"]
+    303["Customer enters M-Pesa PIN (Ref. 303)"]
+    304["Funds transferred to platform escrow account (Ref. 304)"]
+    305["Server receives payment confirmation (Ref. 305)"]
+    306["Status set to ESCROWED; courier matching triggered (Ref. 306)"]
+    307["Courier assigned and completes delivery (Ref. 307)"]
+    308["Proof-of-delivery captured: signature, photo, GPS (Ref. 308)"]
+    309["Cryptographic hash (SHA-256) generated (Ref. 309)"]
+    310["Customer notification sent (Ref. 310)"]
+    311["2-hour dispute window timer starts (Ref. 311)"]
+    312{"Decision: Dispute filed? (Ref. 312)"}
+    312a["Funds frozen; mediation process (Ref. 312a)"]
+    312b["Auto-release (Ref. 312b)"]
+    313a["85% to courier wallet (Ref. 313a)"]
+    313b["15% to platform (Ref. 313b)"]
+    314(["Courier withdraws to M-Pesa at any time (Ref. 314)"])
+
+    301 --> 302
+    302 --> 303
+    303 --> 304
+    304 --> 305
+    305 --> 306
+    306 --> 307
+    307 --> 308
+    308 --> 309
+    309 --> 310
+    310 --> 311
+    311 --> 312
     
-    L --> M[2-Hour Dispute Window]
-    M --> N{Dispute Filed?}
+    312 -->|YES| 312a
+    312 -->|NO| 312b
     
-    N -->|Yes| O[Freeze Funds<br/>Start Resolution]
-    N -->|No| P[Auto-Release Funds]
+    312a --> 313a
+    312a --> 313b
+    312b --> 313a
+    312b --> 313b
     
-    O --> Q{Resolution}
-    Q -->|Customer Wins| R[Refund to Customer]
-    Q -->|Courier Wins| P
+    313a --> 314
     
-    P --> S[Split Payment]
-    S --> T[85% to Courier Wallet]
-    S --> U[15% to Platform]
-    T --> V[Courier Withdraws<br/>to M-Pesa Anytime]
-    V --> W([End])
-    R --> W
+    linkStyle default stroke:#000000,stroke-width:1px

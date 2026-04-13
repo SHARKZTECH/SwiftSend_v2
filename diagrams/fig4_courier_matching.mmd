@@ -1,22 +1,37 @@
 flowchart TD
-    subgraph "Stage 1: Initial Filtering"
-        A[New Delivery Order] --> B[Query Online Couriers<br/>within 5km Radius]
-        B --> C[Filter by Vehicle Type<br/>vs Package Size]
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    
+    subgraph S1["Stage 1 - Initial Filtering (Ref. 401)"]
+        401a["Input: New delivery order (Ref. 401a)"]
+        401b["Query: Online couriers within 5km radius (Ref. 401b)"]
+        401c["Filter: Vehicle type compatible with package size (Ref. 401c)"]
+        401a --> 401b
+        401b --> 401c
     end
     
-    subgraph "Stage 2: Scoring Calculation"
-        C --> D[Calculate Composite Score]
-        D --> E["Score = 0.30 Proximity + 0.20 Rating + 0.20 Vehicle + 0.15 Acceptance + 0.10 Load + 0.05 Traffic"]
+    subgraph S2["Stage 2 - Weighted Scoring (Ref. 402)"]
+        402a["Score = (0.30 x Proximity) + (0.20 x Rating) + (0.20 x Vehicle_Match) + (0.15 x Acceptance_Rate) + (0.10 x Current_Load) + (0.05 x Traffic) (Ref. 402a)"]
     end
     
-    subgraph "Stage 3: Parallel Dispatch"
-        E --> F[Rank by Score Descending]
-        F --> G[Send to Top 3 Simultaneously]
-        G --> H[Start 60s Timer]
-        H --> I{First Accept?}
-        I -->|Yes| J[Assign Courier]
-        I -->|Timeout| K[Expand to 10km]
-        K --> B
+    subgraph S3["Stage 3 - Parallel Dispatch (Ref. 403)"]
+        403a["Rank couriers by score descending (Ref. 403a)"]
+        403b["Simultaneously send offer to top 3 couriers (Ref. 403b)"]
+        403c["60-second timer starts (Ref. 403c)"]
+        403d{"Decision: First acceptance wins assignment? (Ref. 403d)"}
+        403e["Expand radius to 10km and repeat (Ref. 403e)"]
+        
+        403a --> 403b
+        403b --> 403c
+        403c --> 403d
+        403d -->|YES| 403d_end(["Courier Assigned"])
+        403d -->|NO / Timeout| 403e
     end
     
-    J --> L([Delivery Begins])
+    401c --> 402a
+    402a --> 403a
+    403e --> 401b
+    
+    linkStyle default stroke:#000000,stroke-width:1px
+    style S1 fill:none,stroke:#000000,stroke-width:1px
+    style S2 fill:none,stroke:#000000,stroke-width:1px
+    style S3 fill:none,stroke:#000000,stroke-width:1px

@@ -1,25 +1,46 @@
 flowchart TD
-    A([Start]) --> B[User inputs informal address]
-    B --> C[Text sent to NLP Module]
-    C --> D[Tokenization & Entity Recognition]
-    D --> E[Query Landmark Database<br/>with Fuzzy Matching]
-    E --> F[Parse Directional/Distance Info]
-    F --> G[Community Data Lookup<br/>100m radius]
-    G --> H{Multiple<br/>Candidates?}
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
     
-    H -->|Yes| I[ML Ranking Model]
-    H -->|No| J[Calculate Confidence Score]
-    I --> J
+    201(["START: User inputs informal address text (Ref. 201)"])
+    202["Text transmitted to natural language processing module (Ref. 202)"]
+    203["Tokenisation and Named Entity Recognition (Ref. 203)"]
+    204["Landmark database query with fuzzy matching (Ref. 204)"]
+    205["Directional and distance modifier parsing (Ref. 205)"]
+    206["Community data lookup within 100m radius (Ref. 206)"]
+    207{"Decision: Multiple candidates? (Ref. 207)"}
+    207a["Machine learning ranking (Ref. 207a)"]
+    208["Confidence score calculation (0-100) (Ref. 208)"]
+    209{"Decision: Score above 60? (Ref. 209)"}
+    209a["Auto-resolve (Ref. 209a)"]
+    209b["Verification protocol (Ref. 209b)"]
+    210["GPS coordinates returned with accuracy zone (Ref. 210)"]
+    211["Map confirmation displayed to user (Ref. 211)"]
+    212{"Decision: User adjusts pin? (Ref. 212)"}
+    212a["Store correction for learning (Ref. 212a)"]
+    212b(["END (Ref. 212b)"])
+
+    201 --> 202
+    202 --> 203
+    203 --> 204
+    204 --> 205
+    205 --> 206
+    206 --> 207
     
-    J --> K{Score > 60%?}
-    K -->|Yes| L[Auto-resolve to GPS]
-    K -->|No| M[Request Verification Call]
-    M --> L
+    207 -->|YES| 207a
+    207 -->|NO| 208
+    207a --> 208
     
-    L --> N[Return Coordinates<br/>with Accuracy Zone]
-    N --> O[Show Map Confirmation]
-    O --> P{User Adjusts?}
+    208 --> 209
+    209 -->|YES| 209a
+    209 -->|NO| 209b
+    209a --> 210
+    209b --> 210
     
-    P -->|Yes| Q[Store Correction<br/>for ML Learning]
-    P -->|No| R([End])
-    Q --> R
+    210 --> 211
+    211 --> 212
+    
+    212 -->|YES| 212a
+    212 -->|NO| 212b
+    212a --> 212b
+    
+    linkStyle default stroke:#000000,stroke-width:1px

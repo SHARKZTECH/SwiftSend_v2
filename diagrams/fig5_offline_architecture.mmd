@@ -1,35 +1,38 @@
 flowchart TB
-    subgraph "Local Storage Layer"
-        SQL[(SQLite DB)]
-        MAP[(Map Cache OSM Tiles)]
-        POD[(POD Queue)]
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    
+    subgraph S501["Local Storage Layer (Ref. 501)"]
+        501a[("SQLite Database: delivery data, recipient info, navigation waypoints (Ref. 501a)")]
+        501b[("Map Cache: OpenStreetMap tiles for service area (Ref. 501b)")]
+        501c[("Proof-of-Delivery Queue: signatures, photos, GPS coordinates awaiting upload (Ref. 501c)")]
     end
     
-    subgraph "Offline Capabilities"
-        V[View Assigned Deliveries]
-        N[GPS Navigation]
-        C[Capture POD]
-        M[Mark Complete]
-        X[Cannot Accept New Jobs]
+    subgraph S502["Offline Capabilities (Ref. 502)"]
+        502a["View assigned deliveries (Ref. 502a)"]
+        502b["GPS navigation with cached maps (Ref. 502b)"]
+        502c["Capture proof-of-delivery: signature and photo (Ref. 502c)"]
+        502d["Mark delivery complete (Ref. 502d)"]
     end
     
-    subgraph "Sync Mechanism"
-        BG[Background Service 30s Check]
-        BG --> Q{Online?}
-        Q -->|Yes| UP[Query PENDING Records]
-        UP --> BATCH[Batch Upload POD with Retry]
-        Q -->|No| WAIT[Wait and Retry]
-        WAIT --> BG
+    subgraph S503["Synchronisation Mechanism (Ref. 503)"]
+        503a["Background service monitors connectivity at 30-second intervals (Ref. 503a)"]
+        503b["On connectivity restore: query local database for PENDING records (Ref. 503b)"]
+        503c["Batch upload proof-of-delivery data with retry logic (Ref. 503c)"]
+        503d["SMS fallback for critical updates (Ref. 503d)"]
     end
     
-    subgraph "Fallback"
-        SMS[SMS Gateway]
-        SMS --> CRIT[Critical Updates via SMS]
-    end
+    501a -.-> 502a
+    501b -.-> 502b
+    502c -.-> 501c
+    502d -.-> 501c
     
-    SQL --> V
-    MAP --> N
-    V --> C
-    C --> POD
-    POD --> BATCH
-    BATCH --> SMS
+    503a --> 503b
+    503b -.-> 501a
+    503b -.-> 501c
+    503b --> 503c
+    503c --> 503d
+    
+    linkStyle default stroke:#000000,stroke-width:1px
+    style S501 fill:none,stroke:#000000,stroke-width:1px
+    style S502 fill:none,stroke:#000000,stroke-width:1px
+    style S503 fill:none,stroke:#000000,stroke-width:1px

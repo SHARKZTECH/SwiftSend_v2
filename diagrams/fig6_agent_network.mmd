@@ -1,23 +1,29 @@
 flowchart TB
-    subgraph "Agent Registration"
-        REG[Local Shops and M-Pesa Agents]
-        REG --> DATA[Registered: Name, GPS, Hours]
-        DATA --> COV[500+ Agents in Kibera, Mathare, Mukuru]
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
+    
+    subgraph S601["Agent Registration (Ref. 601)"]
+        601a["Local shops, M-Pesa agents, kiosks in informal settlements (Ref. 601a)"]
+        601b["Registered data: business name, GPS coordinates, operating hours, capacity (Ref. 601b)"]
+        601a --> 601b
     end
     
-    subgraph "Package Handoff Flow"
-        CR[Courier] -->|Delivers to| AG[Agent Location]
-        AG --> SIG[Agent Signature + Photo as POD]
-        SIG --> SMS[SMS to Recipient with Code]
-        SMS --> WAIT[48-Hour Collection Window]
-        WAIT --> REC[Recipient Shows Code]
-        REC --> REL[Agent Releases Package]
-        REL --> PAY[Agent Earns KES 30 Weekly]
+    subgraph S602["Package Handoff Flow (Ref. 602)"]
+        602a["Courier delivers to agent instead of final recipient (Ref. 602a)"]
+        602b["Agent signature and photo captured as proof-of-delivery (Ref. 602b)"]
+        602c["SMS with unique collection code sent to recipient (Ref. 602c)"]
+        602d["Recipient has 48-hour collection window (Ref. 602d)"]
+        602e["Recipient presents code; agent releases package (Ref. 602e)"]
+        602f["Agent earns KES 30 per collected package, paid weekly via M-Pesa (Ref. 602f)"]
+        
+        602a --> 602b
+        602b --> 602c
+        602c --> 602d
+        602d --> 602e
+        602e --> 602f
     end
     
-    subgraph "Geographic Coverage"
-        K[Kibera 150 agents]
-        MT[Mathare 120 agents]
-        MK[Mukuru 100 agents]
-        O[Other Areas 130+ agents]
-    end
+    601b -.-> 602a
+    
+    linkStyle default stroke:#000000,stroke-width:1px
+    style S601 fill:none,stroke:#000000,stroke-width:1px
+    style S602 fill:none,stroke:#000000,stroke-width:1px

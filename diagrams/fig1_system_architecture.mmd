@@ -1,43 +1,32 @@
 flowchart TB
-    subgraph "Mobile Apps"
-        CA[Customer App<br/>Android/iOS]
-        RA[Courier App<br/>Android/iOS]
-    end
+    classDef default fill:#FFFFFF,stroke:#000000,stroke-width:1px,color:#000000
     
-    subgraph "Web Portals"
-        AP[Agent Portal]
-        AD[Admin Dashboard]
-    end
+    101["Customer Mobile Application - Android/iOS (Ref. 101)"]
+    102["Courier Mobile Application - Android/iOS (Ref. 102)"]
+    103["Agent Web Portal (Ref. 103)"]
     
-    subgraph "Cloud Infrastructure"
-        API[API Server<br/>REST/HTTPS]
-        ML[ML Inference<br/>Service]
-        PS[Payment<br/>Service]
-    end
+    104["API Server - Cloud Infrastructure (Ref. 104)"]
     
-    subgraph "Database Layer"
-        PG[(PostgreSQL<br/>Cluster)]
-        RD[(Redis<br/>Cache)]
-    end
+    105[("Database Cluster - PostgreSQL (Ref. 105)")]
     
-    subgraph "External Services"
-        MP[M-Pesa API]
-        MAP[Google Maps API]
-        SMS[SMS Gateway]
-        FCM[Firebase FCM]
-    end
+    106["Machine Learning Inference Service (Ref. 106)"]
+    107["Payment Processing Service (Ref. 107)"]
     
-    CA <-->|HTTPS| API
-    RA <-->|HTTPS| API
-    AP <-->|HTTPS| API
-    AD <-->|HTTPS| API
+    108["M-Pesa API - External Service (Ref. 108)"]
+    109["Mapping Services - External Service (Ref. 109)"]
+    110["SMS Gateway - External Service (Ref. 110)"]
+
+    101 <-->|"(Ref. 111)"| 104
+    102 <-->|"(Ref. 111)"| 104
+    103 <-->|"(Ref. 111)"| 104
     
-    API <--> PG
-    API <--> RD
-    API <--> ML
-    API <--> PS
+    104 <-->|"(Ref. 111)"| 106
+    104 <-->|"(Ref. 111)"| 107
     
-    PS <--> MP
-    API <--> MAP
-    API <--> SMS
-    API <--> FCM
+    104 <-.->|"(Ref. 112)"| 105
+    
+    107 -.->|"(Ref. 113)"| 108
+    104 -.->|"(Ref. 113)"| 109
+    104 -.->|"(Ref. 113)"| 110
+    
+    linkStyle default stroke:#000000,stroke-width:1px
