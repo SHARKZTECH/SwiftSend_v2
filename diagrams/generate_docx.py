@@ -1,6 +1,7 @@
 import docx
 from docx.shared import Cm, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from PIL import Image
 
 doc = docx.Document()
 
@@ -10,8 +11,8 @@ section.top_margin = Cm(2.5)
 section.left_margin = Cm(2.5)
 section.right_margin = Cm(1.5)
 section.bottom_margin = Cm(1.0)
-section.page_height = Cm(29.7) # A4 Height
-section.page_width = Cm(21.0)  # A4 Width
+section.page_height = Cm(29.7)
+section.page_width = Cm(21.0)
 
 figures = [
     ("fig1_system_architecture.png", "Fig. 1"),
@@ -28,9 +29,9 @@ for i, (filename, title) in enumerate(figures):
     # Sheet number top right
     p_header = doc.add_paragraph()
     p_header.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run = p_header.add_run(f"{i+1}/{total}")
-    run.font.name = 'Arial'
-    run.font.size = Pt(12)
+    run_header = p_header.add_run(f"{i+1}/{total}")
+    run_header.font.name = 'Arial'
+    run_header.font.size = Pt(12)
     
     # Image
     p_img = doc.add_paragraph()
@@ -38,9 +39,22 @@ for i, (filename, title) in enumerate(figures):
     run_img = p_img.add_run()
     
     try:
-        # Constrain width to 16cm so it stays within the printable horizontal area 
-        # (A4 width 21cm - left 2.5 - right 1.5 = 17cm available)
-        run_img.add_picture(filename, width=Cm(16))
+        # Dynamically scale the image bounds using PIL
+        img = Image.open(filename)
+        w, h = img.size
+        ratio = w / h
+        
+        max_w_cm = 16.0
+        max_h_cm = 20.0
+        
+        new_w_cm = max_w_cm
+        new_h_cm = new_w_cm / ratio
+        
+        if new_h_cm > max_h_cm:
+            new_h_cm = max_h_cm
+            new_w_cm = new_h_cm * ratio
+            
+        run_img.add_picture(filename, width=Cm(new_w_cm), height=Cm(new_h_cm))
     except Exception as e:
         print(f"Error loading {filename}: {e}")
         
@@ -56,4 +70,4 @@ for i, (filename, title) in enumerate(figures):
         doc.add_page_break()
 
 doc.save("KIPI_Drawings.docx")
-print("KIPI_Drawings.docx generated successfully.")
+print("KIPI_Drawings.docx generated and scaled successfully.")
